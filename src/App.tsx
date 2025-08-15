@@ -1,14 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import FlaggedCsvComponent from './components/FlaggedCsvComponent'
 
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline rotate-45">
-        Hello world!
+      <h1 className="text-3xl font-bold underline">
+        FlaggedCsvComponent Demo
       </h1>
+      <div className="mt-8">
+        <FlaggedCsvComponent className="p-4 border rounded-lg" />
+      </div>
     </>
   )
 }
