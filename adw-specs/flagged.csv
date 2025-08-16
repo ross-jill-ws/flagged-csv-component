@@ -1,0 +1,34 @@
+A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA,AB,AC,AD
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,        {l:B2},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,Client {l:C4},Cobram Estate{l:D4},,,,,,,,,,,,,,,,,,,,,,,,,,
+,,Campaign{l:C5},Heart Health Campaign 2025{l:D5},,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,                                                           {l:D7},,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,July{l:H9},,,,August{l:L9},,,,September{l:P9},,,,,October{l:U9},,,,Estimated Metrics (KPI){l:Y9},,,Estimated Total Units{l:AB9},Media Cost{l:AC9},Total Investment{l:AD9}
+,,,,,,,1900-01-07 00:00:00{l:H10},1900-01-14 00:00:00{l:I10},1900-01-21 00:00:00{l:J10},1900-01-28 00:00:00{l:K10},1900-01-04 00:00:00{l:L10},1900-01-11 00:00:00{l:M10},1900-01-18 00:00:00{l:N10},1900-01-25 00:00:00{l:O10},1900-02-01 00:00:00{l:P10},1900-02-08 00:00:00{l:Q10},1900-02-15 00:00:00{l:R10},1900-02-22 00:00:00{l:S10},1900-02-28 00:00:00{l:T10},1900-01-06 00:00:00{l:U10},1900-01-13 00:00:00{l:V10},1900-01-20 00:00:00{l:W10},1900-01-27 00:00:00{l:X10},CPM{l:Y10},CPCV{l:Z10},R&F{l:AA10},,,
+,,Format{l:C11},Targeting{l:D11},Geo{l:E11},Start Date{l:F11},End Date{l:G11},,,,,,,,,,,,,,,,,,,,,,,
+,YouTube{l:B12},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,Kopa - YouTube TrueView{l:B13},15''{l:C13},"PPL 25+, Contextual & Interest Targeting{l:D13}",ESB{l:E13},2025-07-28 00:00:00{l:F13},2025-10-19 00:00:00{l:G13},,,,,,,,,,,,,,,,,,-{l:Y13},0.06{l:Z13},-{l:AA13},2304166.666666667{l:AB13},138250{l:AC13},138250{l:AD13}
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,BVOD{l:B15},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,10Play {l:B16},"15""{l:C16}","PPL 25+, Contextual Targeting{l:D16}",ESB{l:E16},2025-07-28 00:00:00{l:F16},2025-10-19 00:00:00{l:G16},,,,,,,,,,,,,,,,,,49.4{l:Y16},-{l:Z16},-{l:AA16},2955299{l:AB16},146000{l:AC16},146000{l:AD16}
+,9Now{l:B17},"15""{l:C17}","PPL 25+, Contextual & Interest Targeting (food concious, weekend chefs, experimental chefs, active & lapsed oil buyers, affluent){l:D17}",ESB{l:E17},2025-07-28 00:00:00{l:F17},2025-10-19 00:00:00{l:G17},,,,,,,,,,,,,,,,,,,-{l:Z17},-{l:AA17},,,
+,7Plus{l:B18},"15""{l:C18}",,ESB{l:E18},2025-07-28 00:00:00{l:F18},2025-10-19 00:00:00{l:G18},,,,,,,,,,,,,,,,,,,-{l:Z18},-{l:AA18},,,
+,SBS On Demand{l:B19},"15""{l:C19}",,ESB{l:E19},2025-07-28 00:00:00{l:F19},2025-10-19 00:00:00{l:G19},,,,,,,,,,,,,,,,,,,-{l:Z19},-{l:AA19},,,
+,Added Value - 10Play Homepage Takeover{l:B20},HPTO{l:C20},Broad{l:D20},National{l:E20},,,* date TBC{l:H20},,,,,,,,,,,,,,,,,-{l:Y20},-{l:Z20},-{l:AA20},250000{l:AB20},-{l:AC20},-{l:AD20}
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,OOH{l:B22},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,QMS & oOh!{l:B23},Large Format{l:C23},PPL25+{l:D23},"SYD, MEL, BRI{l:E23}",2025-07-28 00:00:00{l:F23},2025-09-21 00:00:00{l:G23},,,,,,,,,,,,,,,,,,-{l:Y23},-{l:Z23},"Est 1 +60-65%, 5x freq.{l:AA23}",-{l:AB23},260000{l:AC23},260000{l:AD23}
+,Cartology & oOh! {l:B24},Digital Small Format{l:C24},PPL25+{l:D24},"SYD, MEL, BRI{l:E24}",2025-07-28 00:00:00{l:F24},2025-10-19 00:00:00{l:G24},,,,,,,,,,,,,,,,,,-{l:Y24},-{l:Z24},"Est 1 + 55-60%, 8x freq.{l:AA24}",-{l:AB24},180000{l:AC24},180000{l:AD24}
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,Digital Audio {l:B26},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,Acast - The Doctor's Kitchen Podcast{l:B27},30'' - 90'' voice reads{l:C27},"PPL 25+, Contextual Targeting{l:D27}",National{l:E27},2025-07-28 00:00:00{l:F27},2025-10-19 00:00:00{l:G27},,,,,,,,,,,,,,,,,,75{l:Y27},-{l:Z27},-{l:AA27},109200{l:AB27},11600{l:AC27},11600{l:AD27}
+,Acast - RON{l:B28},30''{l:C28},"PPL 25+, Genre & audience overlays (food & drink, health & wellness, family, leisure, lifestyle, homeowner){l:D28}",National{l:E28},2025-07-28 00:00:00{l:F28},2025-10-19 00:00:00{l:G28},,,,,,,,,,,,,,,,,,17.364720269030876{l:Y28},-{l:Z28},-{l:AA28},1635500{l:AB28},28400{l:AC28},28400{l:AD28}
+,ARN - Health & Wellness Bundle{l:B29},"
+30''{l:C29}","PPL 25+, Contextual targeting & audience overlays (grocery decision makers, shoppers prioritizing health & nutrition){l:D29}",National{l:E29},2025-07-28 00:00:00{l:F29},2025-10-19 00:00:00{l:G29},,,,,,,,,,,,,,,,,,21.505376344086024{l:Y29},-{l:Z29},-{l:AA29},1860000{l:AB29},40000{l:AC29},40000{l:AD29}
+,Partnership{l:B30},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,Broadsheet{l:B31},See schedule tab for full details{l:C31},,"SYD, MEL & BRI{l:E31}",2025-07-28 00:00:00{l:F31},2025-10-19 00:00:00{l:G31},,,,,,,,,,,,,,,,,,46.5353102258066{l:Y31},-{l:Z31},-{l:AA31},1563329{l:AB31},72750{l:AC31},72750{l:AD31}
+,,,,,,,,,,,,,,,,,,,,,,,,Total Media Cost{l:Y32},,,,877000{l:AC32},877000{l:AD32}
