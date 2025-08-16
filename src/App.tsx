@@ -84,14 +84,54 @@ Summary & Notes{#E2EFDA}{MG:595420}{l:A71},{MG:595420}{l:B71},{MG:595420}{l:C71}
 
 function App() {
   const [csvInput, setCsvInput] = useState(flaggedCsvData);
-  const [showLocations, setShowLocations] = useState(true);
-  const [highlightInput, setHighlightInput] = useState('A9-AD9, A11');
-  const [highlightCells, setHighlightCells] = useState<string[]>(parseHighlightInput('A9-AD9, A11'));
+  const [showLocations, setShowLocations] = useState(false);
+  const [highlightInput, setHighlightInput] = useState('');
+  const [highlightCells, setHighlightCells] = useState<string[]>(parseHighlightInput(''));
+  const [isDragOver, setIsDragOver] = useState(false);
   
   const handleHighlightChange = (value: string) => {
     setHighlightInput(value);
     const cells = parseHighlightInput(value);
     setHighlightCells(cells);
+  };
+
+  const handleFileUpload = (file: File) => {
+    if (file.type === 'text/csv' || file.name.endsWith('.csv') || file.type === 'text/plain') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        setCsvInput(content);
+      };
+      reader.readAsText(file);
+    } else {
+      alert('Please upload a CSV file');
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleFileUpload(file);
+    }
   };
 
   return (
@@ -131,7 +171,35 @@ function App() {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-semibold mb-4">Input CSV (with flags)</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold">Input CSV (with flags)</h2>
+              <div className="flex items-center gap-4">
+                {/* File Upload Button */}
+                <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                  Upload CSV
+                  <input
+                    type="file"
+                    accept=".csv,text/csv,text/plain"
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                  />
+                </label>
+                
+                {/* Drop Zone */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-lg px-4 py-2 text-sm transition-colors ${
+                    isDragOver 
+                      ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                      : 'border-gray-300 bg-gray-50 text-gray-600'
+                  }`}
+                >
+                  {isDragOver ? 'Drop CSV file here' : 'Or drag & drop CSV file'}
+                </div>
+              </div>
+            </div>
             <textarea
               value={csvInput}
               onChange={(e) => setCsvInput(e.target.value)}
