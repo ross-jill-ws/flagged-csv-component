@@ -29,18 +29,17 @@ export interface ParsedCsvData {
 }
 
 export function parseFlaggedCsv(csvString: string): ParsedCsvData {
-  const lines = csvString.trim().split('\n');
+  const rows = parseCSVToRows(csvString);
   const cells: ParsedCell[][] = [];
   const mergedCellsMap = new Map<string, MergedCell>();
   
   let maxRow = 0;
   let maxCol = 0;
 
-  lines.forEach((line, rowIndex) => {
-    const row: ParsedCell[] = [];
-    const cellValues = splitCsvLine(line);
+  rows.forEach((row, rowIndex) => {
+    const parsedRow: ParsedCell[] = [];
     
-    cellValues.forEach((cellValue, colIndex) => {
+    row.forEach((cellValue, colIndex) => {
       const { value, flags } = parseCellValue(cellValue);
       const cell: ParsedCell = {
         value,
@@ -49,7 +48,7 @@ export function parseFlaggedCsv(csvString: string): ParsedCsvData {
         colIndex
       };
       
-      row.push(cell);
+      parsedRow.push(cell);
       
       if (flags.mergeId) {
         if (!mergedCellsMap.has(flags.mergeId)) {
@@ -80,7 +79,7 @@ export function parseFlaggedCsv(csvString: string): ParsedCsvData {
       maxCol = Math.max(maxCol, colIndex);
     });
     
-    cells.push(row);
+    cells.push(parsedRow);
     maxRow = Math.max(maxRow, rowIndex);
   });
 
@@ -92,31 +91,63 @@ export function parseFlaggedCsv(csvString: string): ParsedCsvData {
   };
 }
 
-function splitCsvLine(line: string): string[] {
-  const result: string[] = [];
-  let current = '';
+function parseCSVToRows(csvString: string): string[][] {
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentField = '';
   let inQuotes = false;
   
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
+  for (let i = 0; i < csvString.length; i++) {
+    const char = csvString[i];
+    const nextChar = csvString[i + 1];
     
-    if (char === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i++;
+    if (!inQuotes) {
+      if (char === '"') {
+        inQuotes = true;
+      } else if (char === ',') {
+        currentRow.push(currentField);
+        currentField = '';
+      } else if (char === '\n') {
+        currentRow.push(currentField);
+        if (currentRow.length > 0 || currentField !== '') {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentField = '';
+      } else if (char === '\r' && nextChar === '\n') {
+        currentRow.push(currentField);
+        if (currentRow.length > 0 || currentField !== '') {
+          rows.push(currentRow);
+        }
+        currentRow = [];
+        currentField = '';
+        i++; // Skip the \n
       } else {
-        inQuotes = !inQuotes;
+        currentField += char;
       }
-    } else if (char === ',' && !inQuotes) {
-      result.push(current);
-      current = '';
     } else {
-      current += char;
+      if (char === '"') {
+        if (nextChar === '"') {
+          currentField += '"';
+          i++; // Skip the next quote
+        } else {
+          inQuotes = false;
+        }
+      } else {
+        currentField += char;
+      }
     }
   }
   
-  result.push(current);
-  return result;
+  // Don't forget the last field and row
+  if (currentField !== '' || currentRow.length > 0) {
+    currentRow.push(currentField);
+  }
+  if (currentRow.length > 0) {
+    rows.push(currentRow);
+  }
+  
+  return rows;
 }
 
 function parseCellValue(cellValue: string): { value: string; flags: CellFlags } {

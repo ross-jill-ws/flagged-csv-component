@@ -15,15 +15,28 @@ Tablets{l:A4}{#FFFF00},300{l:B4},350{l:C4},400{l:D4},450{l:E4},1500{l:F4}{#00FF0
 Watches{l:A5}{#FFFF00},200{l:B5},250{l:C5},300{l:D5},350{l:E5},1100{l:F5}{#00FF00}
 Accessories{l:A6}{#FFFF00},150{l:B6},175{l:C6},200{l:D6},225{l:E6},750{l:F6}{#00FF00}`;
 
+const complexCsv = `,ARN - Health & Wellness Bundle{l:B29},"
+30''{l:C29}","PPL 25+, Contextual targeting & audience overlays (grocery decision makers, shoppers prioritizing health & nutrition){l:D29}",National{l:E29},2025-07-28 00:00:00{l:F29},2025-10-19 00:00:00{l:G29},,,,,,,,,,,,,,,,,,21.505376344086024{l:Y29},-{l:Z29},-{l:AA29},1860000{l:AB29},40000{l:AC29},40000{l:AD29}
+,Partnership{l:B30},,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,Broadsheet{l:B31},See schedule tab for full details{l:C31},,"SYD, MEL & BRI{l:E31}",2025-07-28 00:00:00{l:F31},2025-10-19 00:00:00{l:G31},,,,,,,,,,,,,,,,,,46.5353102258066{l:Y31},-{l:Z31},-{l:AA31},1563329{l:AB31},72750{l:AC31},72750{l:AD31}`;
+
 function App() {
   const [csvInput, setCsvInput] = useState(sampleCsvData);
   const [showLocations, setShowLocations] = useState(false);
-  const [activeDemo, setActiveDemo] = useState<'colors' | 'locations'>('colors');
+  const [activeDemo, setActiveDemo] = useState<'colors' | 'locations' | 'complex'>('colors');
 
-  const handleDemoChange = (demo: 'colors' | 'locations') => {
+  const handleDemoChange = (demo: 'colors' | 'locations' | 'complex') => {
     setActiveDemo(demo);
-    setCsvInput(demo === 'colors' ? sampleCsvData : largeSampleCsv);
-    setShowLocations(demo === 'locations');
+    if (demo === 'colors') {
+      setCsvInput(sampleCsvData);
+      setShowLocations(false);
+    } else if (demo === 'locations') {
+      setCsvInput(largeSampleCsv);
+      setShowLocations(true);
+    } else {
+      setCsvInput(complexCsv);
+      setShowLocations(true);
+    }
   };
 
   return (
@@ -53,6 +66,16 @@ function App() {
             }`}
           >
             Location Flags Demo
+          </button>
+          <button
+            onClick={() => handleDemoChange('complex')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              activeDemo === 'complex' 
+                ? 'bg-blue-600 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Complex CSV (Multi-line)
           </button>
         </div>
 
