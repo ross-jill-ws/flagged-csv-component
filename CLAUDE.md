@@ -11,6 +11,7 @@ This is a React application built with TypeScript and Vite. The project uses Rea
 ### Development
 - `node22 npm run dev` - Start the Vite development server with HMR
 - `node22 npm run build` - Build for production (runs TypeScript compiler and Vite build)
+- `node22 npm run build:lib` - Build the library for npm publishing
 - `node22 npm run preview` - Preview the production build locally
 - `node22 npm run lint` - Run ESLint to check code quality
 
@@ -23,7 +24,10 @@ This is a React application built with TypeScript and Vite. The project uses Rea
 
 ### Application Structure
 - Entry point: `src/main.tsx` - Renders the React app in StrictMode
-- Main component: `src/App.tsx` - Root application component
+- Main component: `src/App.tsx` - Root application component with demo interface
+- **FlaggedCsvComponent**: `src/components/FlaggedCsvComponent.tsx` - Main library component that renders flagged CSV data as an Excel-like table
+- **CSV Parser**: `src/utils/flaggedCsvParser.ts` - Parses flagged CSV format with support for colors, merged cells, and location flags
+- Library exports: `src/lib/index.ts` - Entry point for npm package distribution
 - Styles: CSS modules with `App.css` and `index.css`
 - Assets: Static files in `public/` and imported assets in `src/assets/`
 
