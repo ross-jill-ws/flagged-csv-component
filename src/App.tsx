@@ -1,6 +1,7 @@
 import './App.css'
 import FlaggedCsvComponent from './components/FlaggedCsvComponent'
 import { useState } from 'react'
+import { parseHighlightInput } from './utils/cellRangeParser'
 
 const sampleCsvData = `Name{#0E2841},Color{#0E2841},Value{#0E2841},JUL{#0E2841},AUG{#0E2841},SEP{#0E2841},OCT{#0E2841},NOV{#0E2841},DEC{#0E2841}
 My color1,{#84E291},30,$500{#84E291}{MG:897498},{MG:897498},,,,
@@ -24,8 +25,8 @@ function App() {
   const [csvInput, setCsvInput] = useState(largeSampleCsv);
   const [showLocations, setShowLocations] = useState(true);
   const [activeDemo, setActiveDemo] = useState<'colors' | 'locations' | 'complex'>('locations');
-  const [highlightInput, setHighlightInput] = useState('A3, B5, F2');
-  const [highlightCells, setHighlightCells] = useState<string[]>(['A3', 'B5', 'F2']);
+  const [highlightInput, setHighlightInput] = useState('A1-D1, F2');
+  const [highlightCells, setHighlightCells] = useState<string[]>(['A1', 'B1', 'C1', 'D1', 'F2']);
 
   const handleDemoChange = (demo: 'colors' | 'locations' | 'complex') => {
     setActiveDemo(demo);
@@ -37,22 +38,21 @@ function App() {
     } else if (demo === 'locations') {
       setCsvInput(largeSampleCsv);
       setShowLocations(true);
-      setHighlightCells(['A3', 'B5', 'F2']);
-      setHighlightInput('A3, B5, F2');
+      const rangeInput = 'A1-D1, F2';
+      setHighlightInput(rangeInput);
+      setHighlightCells(parseHighlightInput(rangeInput));
     } else {
       setCsvInput(complexCsv);
       setShowLocations(true);
-      setHighlightCells(['B29', 'Y31']);
-      setHighlightInput('B29, Y31');
+      const rangeInput = 'B29-G29, Y31';
+      setHighlightInput(rangeInput);
+      setHighlightCells(parseHighlightInput(rangeInput));
     }
   };
   
   const handleHighlightChange = (value: string) => {
     setHighlightInput(value);
-    const cells = value
-      .split(',')
-      .map(cell => cell.trim())
-      .filter(cell => cell.length > 0);
+    const cells = parseHighlightInput(value);
     setHighlightCells(cells);
   };
 
@@ -118,14 +118,14 @@ function App() {
               
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Highlight cells (comma-separated, e.g., A3, B5):
+                  Highlight cells (supports ranges, e.g., A1-D1, F2):
                 </label>
                 <input
                   type="text"
                   value={highlightInput}
                   onChange={(e) => handleHighlightChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                  placeholder="Enter cell locations to highlight..."
+                  placeholder="Enter cells or ranges (A1-D1, F2, B3-B5)..."
                 />
                 {highlightCells.length > 0 && (
                   <p className="text-xs text-gray-600 mt-1">
@@ -150,18 +150,37 @@ function App() {
         </div>
 
         <div className="mt-8 p-6 bg-blue-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">Supported Flags:</h3>
-          <ul className="space-y-2 text-sm">
-            <li>
-              <code className="bg-white px-2 py-1 rounded">{'{#RRGGBB}'}</code> - Background color
-            </li>
-            <li>
-              <code className="bg-white px-2 py-1 rounded">{'{MG:XXXXXX}'}</code> - Merge cells with same ID
-            </li>
-            <li>
-              <code className="bg-white px-2 py-1 rounded">{'{l:CellRef}'}</code> - Original Excel cell location
-            </li>
-          </ul>
+          <h3 className="text-lg font-semibold mb-2">Supported Features:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold mb-2">CSV Flags:</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">{'{#RRGGBB}'}</code> - Background color
+                </li>
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">{'{MG:XXXXXX}'}</code> - Merge cells with same ID
+                </li>
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">{'{l:CellRef}'}</code> - Original Excel cell location
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Highlight Ranges:</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">A1-D1</code> - Row range (same row)
+                </li>
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">A1-A10</code> - Column range (same column)
+                </li>
+                <li>
+                  <code className="bg-white px-2 py-1 rounded">A1-D1, F2</code> - Mixed ranges and cells
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
