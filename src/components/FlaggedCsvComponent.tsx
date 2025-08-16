@@ -6,14 +6,21 @@ export interface FlaggedCsvComponentProps {
   csvData: string;
   className?: string;
   showCellLocations?: boolean;
+  highlightCells?: string[];
 }
 
 const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({ 
   csvData, 
   className = '',
-  showCellLocations = false 
+  showCellLocations = false,
+  highlightCells = [] 
 }) => {
   const parsedData = useMemo(() => parseFlaggedCsv(csvData), [csvData]);
+  
+  const highlightSet = useMemo(() => 
+    new Set(highlightCells.map(cell => cell.toUpperCase())), 
+    [highlightCells]
+  );
   
   const isCellMerged = (rowIndex: number, colIndex: number): MergedCell | null => {
     for (const [, mergedCell] of parsedData.mergedCells) {
@@ -43,11 +50,40 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
     };
   };
   
-  const getCellStyle = (cell: ParsedCell): React.CSSProperties => {
+  const isCellHighlighted = (cell: ParsedCell, mergedCell: MergedCell | null): boolean => {
+    if (highlightSet.size === 0) return false;
+    
+    if (mergedCell) {
+      for (let row = mergedCell.startRow; row <= mergedCell.endRow; row++) {
+        for (let col = mergedCell.startCol; col <= mergedCell.endCol; col++) {
+          const cellData = parsedData.cells[row]?.[col];
+          if (cellData?.flags.location && highlightSet.has(cellData.flags.location.toUpperCase())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    
+    return cell.flags.location ? highlightSet.has(cell.flags.location.toUpperCase()) : false;
+  };
+  
+  const getCellStyle = (cell: ParsedCell, isHighlighted: boolean, hasHighlights: boolean): React.CSSProperties => {
     const style: React.CSSProperties = {};
     
     if (cell.flags.color) {
       style.backgroundColor = cell.flags.color;
+    }
+    
+    if (hasHighlights) {
+      if (!isHighlighted) {
+        style.opacity = '0.3';
+        style.filter = 'brightness(0.5)';
+      } else {
+        style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.8)';
+        style.position = 'relative';
+        style.zIndex = 10;
+      }
     }
     
     return style;
@@ -89,9 +125,17 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                 
                 const mergedCell = isCellMerged(rowIndex, colIndex);
                 const { rowSpan, colSpan } = getCellSpan(rowIndex, colIndex);
-                const cellStyle = mergedCell 
-                  ? { backgroundColor: mergedCell.color } 
-                  : getCellStyle(cell);
+                const isHighlighted = isCellHighlighted(cell, mergedCell);
+                const hasHighlights = highlightSet.size > 0;
+                
+                let cellStyle: React.CSSProperties = getCellStyle(cell, isHighlighted, hasHighlights);
+                if (mergedCell && mergedCell.color && !hasHighlights) {
+                  cellStyle.backgroundColor = mergedCell.color;
+                } else if (mergedCell && mergedCell.color && hasHighlights) {
+                  if (!cellStyle.backgroundColor) {
+                    cellStyle.backgroundColor = mergedCell.color;
+                  }
+                }
                 
                 const isHeader = rowIndex === 0;
                 const Tag = isHeader ? 'th' : 'td';
@@ -101,7 +145,7 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                     key={colIndex}
                     rowSpan={rowSpan > 1 ? rowSpan : undefined}
                     colSpan={colSpan > 1 ? colSpan : undefined}
-                    className={`border border-gray-300 px-3 py-2 text-sm ${
+                    className={`border border-gray-300 px-3 py-2 text-sm transition-all duration-300 ${
                       isHeader ? 'font-semibold bg-gray-50' : ''
                     } ${cell.value ? '' : 'empty-cell'}`}
                     style={cellStyle}

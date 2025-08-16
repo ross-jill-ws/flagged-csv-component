@@ -21,22 +21,39 @@ const complexCsv = `,ARN - Health & Wellness Bundle{l:B29},"
 ,Broadsheet{l:B31},See schedule tab for full details{l:C31},,"SYD, MEL & BRI{l:E31}",2025-07-28 00:00:00{l:F31},2025-10-19 00:00:00{l:G31},,,,,,,,,,,,,,,,,,46.5353102258066{l:Y31},-{l:Z31},-{l:AA31},1563329{l:AB31},72750{l:AC31},72750{l:AD31}`;
 
 function App() {
-  const [csvInput, setCsvInput] = useState(sampleCsvData);
-  const [showLocations, setShowLocations] = useState(false);
-  const [activeDemo, setActiveDemo] = useState<'colors' | 'locations' | 'complex'>('colors');
+  const [csvInput, setCsvInput] = useState(largeSampleCsv);
+  const [showLocations, setShowLocations] = useState(true);
+  const [activeDemo, setActiveDemo] = useState<'colors' | 'locations' | 'complex'>('locations');
+  const [highlightInput, setHighlightInput] = useState('A3, B5, F2');
+  const [highlightCells, setHighlightCells] = useState<string[]>(['A3', 'B5', 'F2']);
 
   const handleDemoChange = (demo: 'colors' | 'locations' | 'complex') => {
     setActiveDemo(demo);
     if (demo === 'colors') {
       setCsvInput(sampleCsvData);
       setShowLocations(false);
+      setHighlightCells([]);
+      setHighlightInput('');
     } else if (demo === 'locations') {
       setCsvInput(largeSampleCsv);
       setShowLocations(true);
+      setHighlightCells(['A3', 'B5', 'F2']);
+      setHighlightInput('A3, B5, F2');
     } else {
       setCsvInput(complexCsv);
       setShowLocations(true);
+      setHighlightCells(['B29', 'Y31']);
+      setHighlightInput('B29, Y31');
     }
+  };
+  
+  const handleHighlightChange = (value: string) => {
+    setHighlightInput(value);
+    const cells = value
+      .split(',')
+      .map(cell => cell.trim())
+      .filter(cell => cell.length > 0);
+    setHighlightCells(cells);
   };
 
   return (
@@ -88,7 +105,7 @@ function App() {
               className="w-full h-64 p-4 border border-gray-300 rounded-lg font-mono text-sm bg-white"
               placeholder="Paste your flagged CSV data here..."
             />
-            <div className="mt-4 flex items-center gap-4">
+            <div className="mt-4 space-y-3">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -98,6 +115,24 @@ function App() {
                 />
                 <span className="text-sm">Show cell locations</span>
               </label>
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Highlight cells (comma-separated, e.g., A3, B5):
+                </label>
+                <input
+                  type="text"
+                  value={highlightInput}
+                  onChange={(e) => handleHighlightChange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  placeholder="Enter cell locations to highlight..."
+                />
+                {highlightCells.length > 0 && (
+                  <p className="text-xs text-gray-600 mt-1">
+                    Highlighting: {highlightCells.join(', ')}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           
@@ -108,6 +143,7 @@ function App() {
                 csvData={csvInput} 
                 className="w-full"
                 showCellLocations={showLocations}
+                highlightCells={highlightCells}
               />
             </div>
           </div>
