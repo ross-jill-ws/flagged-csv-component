@@ -17,11 +17,11 @@
     }
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "vite --config vite.app.config.ts",
+    "build": "tsc -b && vite build --config vite.app.config.ts",
     "build:lib": "tsc -p tsconfig.lib.json && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "vite preview --config vite.app.config.ts",
     "prepublishOnly": "npm run build:lib"
   },
   "peerDependencies": {
