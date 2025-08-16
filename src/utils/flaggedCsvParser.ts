@@ -1,5 +1,6 @@
 export interface CellFlags {
   color?: string;
+  foregroundColor?: string;
   mergeId?: string;
   location?: string;
 }
@@ -15,6 +16,7 @@ export interface MergedCell {
   mergeId: string;
   value: string;
   color?: string;
+  foregroundColor?: string;
   startRow: number;
   endRow: number;
   startCol: number;
@@ -56,6 +58,7 @@ export function parseFlaggedCsv(csvString: string): ParsedCsvData {
             mergeId: flags.mergeId,
             value: value || '',
             color: flags.color,
+            foregroundColor: flags.foregroundColor,
             startRow: rowIndex,
             endRow: rowIndex,
             startCol: colIndex,
@@ -68,6 +71,9 @@ export function parseFlaggedCsv(csvString: string): ParsedCsvData {
           }
           if (flags.color && !mergedCell.color) {
             mergedCell.color = flags.color;
+          }
+          if (flags.foregroundColor && !mergedCell.foregroundColor) {
+            mergedCell.foregroundColor = flags.foregroundColor;
           }
           mergedCell.startRow = Math.min(mergedCell.startRow, rowIndex);
           mergedCell.endRow = Math.max(mergedCell.endRow, rowIndex);
@@ -158,16 +164,24 @@ function parseCellValue(cellValue: string): { value: string; flags: CellFlags } 
     cleanValue = cleanValue.slice(1, -1).replace(/""/g, '"');
   }
   
-  const colorMatch = cleanValue.match(/\{#([A-Fa-f0-9]{6})\}/g);
-  if (colorMatch) {
-    colorMatch.forEach(match => {
-      const color = match.match(/\{#([A-Fa-f0-9]{6})\}/);
-      if (color) {
-        flags.color = `#${color[1]}`;
-        cleanValue = cleanValue.replace(match, '');
-      }
-    });
-  }
+  // Parse background colors: {#RRGGBB}, {bg:#RRGGBB}, {bc:#RRGGBB}
+  const backgroundColorMatches = [
+    ...Array.from(cleanValue.matchAll(/\{#([A-Fa-f0-9]{6})\}/g)),
+    ...Array.from(cleanValue.matchAll(/\{bg:#([A-Fa-f0-9]{6})\}/g)),
+    ...Array.from(cleanValue.matchAll(/\{bc:#([A-Fa-f0-9]{6})\}/g))
+  ];
+  
+  backgroundColorMatches.forEach(match => {
+    flags.color = `#${match[1]}`;
+    cleanValue = cleanValue.replace(match[0], '');
+  });
+
+  // Parse foreground colors: {fc:#RRGGBB}
+  const foregroundColorMatches = Array.from(cleanValue.matchAll(/\{fc:#([A-Fa-f0-9]{6})\}/g));
+  foregroundColorMatches.forEach(match => {
+    flags.foregroundColor = `#${match[1]}`;
+    cleanValue = cleanValue.replace(match[0], '');
+  });
   
   const mergeMatch = cleanValue.match(/\{MG:(\d{6})\}/g);
   if (mergeMatch) {

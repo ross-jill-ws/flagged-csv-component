@@ -118,6 +118,10 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
       style.backgroundColor = cell.flags.color;
     }
     
+    if (cell.flags.foregroundColor) {
+      style.color = cell.flags.foregroundColor;
+    }
+    
     if (hasHighlights) {
       if (!isHighlighted) {
         style.opacity = '0.2';
@@ -136,9 +140,17 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
   const getCellContent = (cell: ParsedCell, mergedCell: MergedCell | null) => {
     const displayValue = mergedCell ? mergedCell.value : cell.value;
     
+    // Handle line breaks in cell content
+    const formattedValue = displayValue?.split('\n').map((line, index, array) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < array.length - 1 && <br />}
+      </React.Fragment>
+    ));
+    
     return (
       <>
-        {displayValue}
+        {formattedValue}
         {showCellLocations && cell.flags.location && (
           <span className="text-xs text-gray-500 ml-1">
             [{cell.flags.location}]
@@ -216,15 +228,15 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
 
   return (
     <div ref={containerRef} className={`overflow-auto ${className}`} style={{ maxHeight: '600px' }} id="csv-container">
-      <table className="min-w-full border-collapse border border-gray-300">
+      <table className="border-collapse border border-gray-300 table-auto">
         {/* Column headers - only show if first row is not already headers */}
         {!isFirstRowHeader && (
           <thead>
             <tr>
               {/* Empty top-left cell */}
-              <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 min-w-[40px] sticky left-0 top-0 z-30"></th>
+              <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 w-auto whitespace-nowrap sticky left-0 top-0 z-30"></th>
               {parsedData.cells[0]?.map((_, colIndex) => (
-                <th key={colIndex} className="border border-gray-300 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-600 sticky top-0 z-20 min-w-[80px]">
+                <th key={colIndex} className="border border-gray-300 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-600 sticky top-0 z-20 w-auto whitespace-nowrap">
                   {columnNumberToLetter(colIndex + 1)}
                 </th>
               ))}
@@ -239,7 +251,7 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
             return (
               <tr key={rowIndex}>
                 {/* Row header - empty for first row only if it's data headers */}
-                <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 min-w-[40px] sticky left-0 z-20">
+                <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 w-auto whitespace-nowrap sticky left-0 z-20">
                   {isDataHeader ? '' : (excelRowNumber || rowIndex + 1)}
                 </th>
                 
@@ -262,6 +274,10 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                   }
                 }
                 
+                if (mergedCell && mergedCell.foregroundColor) {
+                  cellStyle.color = mergedCell.foregroundColor;
+                }
+                
                 const isCellInHeaderRow = rowIndex === 0 && isFirstRowHeader;
                 const Tag = isCellInHeaderRow ? 'th' : 'td';
                 
@@ -271,10 +287,13 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                     data-location={cell.flags.location?.toUpperCase()}
                     rowSpan={rowSpan > 1 ? rowSpan : undefined}
                     colSpan={colSpan > 1 ? colSpan : undefined}
-                    className={`${hasHighlights && isHighlighted ? '' : 'border border-gray-300'} px-3 py-2 text-sm transition-all duration-300 ${
+                    className={`${hasHighlights && isHighlighted ? '' : 'border border-gray-300'} px-3 py-2 text-sm text-left transition-all duration-300 ${
                       isCellInHeaderRow ? 'font-semibold bg-gray-50' : ''
                     } ${cell.value ? '' : 'empty-cell'}`}
-                    style={cellStyle}
+                    style={{
+                      ...cellStyle,
+                      whiteSpace: (cell.value || mergedCell?.value)?.includes('\n') ? 'pre-line' : 'nowrap'
+                    }}
                   >
                     {getCellContent(cell, mergedCell)}
                   </Tag>

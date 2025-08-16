@@ -52,8 +52,8 @@ npm install flagged-csv-component
 import FlaggedCsvComponent from 'flagged-csv-component';
 
 const csvData = `
-Property ID{#C6E0B4}{l:A1},Address{#C6E0B4}{l:B1},Price{#C6E0B4}{l:C1}
-PID-001{l:A2},123 Main St{l:B2},500000{#FCE4D6}{l:C2}
+Property ID{bg:#C6E0B4}{fc:#000000}{l:A1},Address{#C6E0B4}{l:B1},Price{bc:#C6E0B4}{l:C1}
+PID-001{fc:#0000FF}{l:A2},123 Main St{l:B2},500000{#FCE4D6}{fc:#FF0000}{l:C2}
 PID-002{#F2F2F2}{l:A3},456 Oak Ave{#F2F2F2}{l:B3},750000{#F2F2F2}{l:C3}
 `;
 
@@ -95,9 +95,16 @@ function App() {
 
 ## Flagged CSV Format Specification
 
-### Color Flags
-- Format: `{#RRGGBB}`
-- Example: `{#BDD7EE}` for light blue background
+### Background Color Flags
+- **Original format**: `{#RRGGBB}` (backward compatible)
+- **New aliases**: `{bg:#RRGGBB}` or `{bc:#RRGGBB}`
+- All formats set the cell background color
+- Example: `{#BDD7EE}`, `{bg:#BDD7EE}`, `{bc:#BDD7EE}` for light blue background
+
+### Foreground Color Flags
+- **Format**: `{fc:#RRGGBB}` 
+- Sets the cell text/font color
+- Example: `{fc:#FF0000}` for red text
 
 ### Merge Flags  
 - Format: `{MG:XXXXXX}` where XXXXXX is a unique 6-digit identifier
@@ -110,9 +117,10 @@ function App() {
 
 ### Complex Example
 ```csv
-"Sales Report{#BDD7EE}{MG:100001}{l:A1}","{MG:100001}{l:B1}","{MG:100001}{l:C1}"
-"Q1{#FCE4D6}{l:A2}","Revenue{l:B2}","1000000{l:C2}"
-"Q2{#FCE4D6}{l:A3}","Revenue{l:B3}","1200000{l:C3}"
+"Status{fc:#FFFFFF}{bg:#000000}{l:A1}","Priority{fc:#FFFFFF}{#000000}{l:B1}","Task{fc:#FFFFFF}{bc:#000000}{l:C1}"
+"Complete{fc:#00FF00}{l:A2}","High{fc:#FF0000}{bg:#FFFF00}{l:B2}","Deploy to production{l:C2}"
+"In Progress{fc:#FFA500}{l:A3}","Medium{fc:#FFA500}{l:B3}","Code review{l:C3}"
+"Sales Report{#BDD7EE}{MG:100001}{l:A4}","{MG:100001}{l:B4}","{MG:100001}{l:C4}"
 ```
 
 ## Development
