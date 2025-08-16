@@ -23,6 +23,48 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
     [highlightCells]
   );
   
+  const getExcelRowNumber = (row: ParsedCell[]): number | null => {
+    // Find any cell in this row that has a location flag
+    for (const cell of row) {
+      if (cell.flags.location) {
+        // Extract row number from location like "B5" -> 5
+        const match = cell.flags.location.match(/[A-Z]+(\d+)/);
+        if (match) {
+          return parseInt(match[1], 10);
+        }
+      }
+    }
+    return null;
+  };
+  
+  const columnNumberToLetter = (num: number): string => {
+    let result = '';
+    while (num > 0) {
+      num--;
+      result = String.fromCharCode('A'.charCodeAt(0) + (num % 26)) + result;
+      num = Math.floor(num / 26);
+    }
+    return result;
+  };
+  
+  const isFirstRowHeader = useMemo(() => {
+    if (parsedData.cells.length === 0) return false;
+    
+    const firstRow = parsedData.cells[0];
+    // Check if the first row has meaningful text content (indicating it's headers)
+    const hasTextContent = firstRow.some(cell => 
+      cell.value && 
+      cell.value.trim().length > 0 && 
+      isNaN(Number(cell.value.trim()))
+    );
+    
+    // Check if subsequent rows have different structure (indicating first row is headers)
+    const secondRowExists = parsedData.cells.length > 1;
+    if (!secondRowExists) return hasTextContent;
+    
+    return hasTextContent;
+  }, [parsedData]);
+  
   const isCellMerged = (rowIndex: number, colIndex: number): MergedCell | null => {
     for (const [, mergedCell] of parsedData.mergedCells) {
       if (rowIndex >= mergedCell.startRow && 
@@ -175,10 +217,33 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
   return (
     <div ref={containerRef} className={`overflow-auto ${className}`} style={{ maxHeight: '600px' }} id="csv-container">
       <table className="min-w-full border-collapse border border-gray-300">
+        {/* Column headers - only show if first row is not already headers */}
+        {!isFirstRowHeader && (
+          <thead>
+            <tr>
+              {/* Empty top-left cell */}
+              <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 min-w-[40px] sticky left-0 top-0 z-30"></th>
+              {parsedData.cells[0]?.map((_, colIndex) => (
+                <th key={colIndex} className="border border-gray-300 px-3 py-2 text-xs font-medium bg-gray-100 text-gray-600 sticky top-0 z-20 min-w-[80px]">
+                  {columnNumberToLetter(colIndex + 1)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
         <tbody>
-          {parsedData.cells.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, colIndex) => {
+          {parsedData.cells.map((row, rowIndex) => {
+            const excelRowNumber = getExcelRowNumber(row);
+            const isDataHeader = rowIndex === 0 && isFirstRowHeader;
+            
+            return (
+              <tr key={rowIndex}>
+                {/* Row header - empty for first row only if it's data headers */}
+                <th className="border border-gray-300 px-2 py-2 text-xs font-medium bg-gray-100 text-gray-600 min-w-[40px] sticky left-0 z-20">
+                  {isDataHeader ? '' : (excelRowNumber || rowIndex + 1)}
+                </th>
+                
+                {row.map((cell, colIndex) => {
                 if (!shouldRenderCell(rowIndex, colIndex)) {
                   return null;
                 }
@@ -197,8 +262,8 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                   }
                 }
                 
-                const isHeader = rowIndex === 0;
-                const Tag = isHeader ? 'th' : 'td';
+                const isCellInHeaderRow = rowIndex === 0 && isFirstRowHeader;
+                const Tag = isCellInHeaderRow ? 'th' : 'td';
                 
                 return (
                   <Tag
@@ -207,16 +272,17 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                     rowSpan={rowSpan > 1 ? rowSpan : undefined}
                     colSpan={colSpan > 1 ? colSpan : undefined}
                     className={`${hasHighlights && isHighlighted ? '' : 'border border-gray-300'} px-3 py-2 text-sm transition-all duration-300 ${
-                      isHeader ? 'font-semibold bg-gray-50' : ''
+                      isCellInHeaderRow ? 'font-semibold bg-gray-50' : ''
                     } ${cell.value ? '' : 'empty-cell'}`}
                     style={cellStyle}
                   >
                     {getCellContent(cell, mergedCell)}
                   </Tag>
                 );
-              })}
-            </tr>
-          ))}
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
