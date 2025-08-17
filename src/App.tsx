@@ -230,6 +230,9 @@ function App() {
                   <code className="bg-white px-2 py-1 rounded">{'{#RRGGBB}'}</code> - Background color
                 </li>
                 <li>
+                  <code className="bg-white px-2 py-1 rounded">{'{fc:#RRGGBB}'}</code> - Foreground color
+                </li>
+                <li>
                   <code className="bg-white px-2 py-1 rounded">{'{MG:XXXXXX}'}</code> - Merge cells with same ID
                 </li>
                 <li>

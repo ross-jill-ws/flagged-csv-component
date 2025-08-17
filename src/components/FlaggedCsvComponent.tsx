@@ -122,16 +122,11 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
       style.color = cell.flags.foregroundColor;
     }
     
-    if (hasHighlights && !isHeaderCell) {
-      if (!isHighlighted) {
-        style.opacity = '0.2';
-        style.filter = 'brightness(0.3)';
-      } else {
-        style.border = '3px solid #3B82F6';
-        style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.9), inset 0 0 10px rgba(59, 130, 246, 0.3)';
-        style.position = 'relative';
-        style.zIndex = 10;
-      }
+    if (hasHighlights && !isHeaderCell && isHighlighted) {
+      style.border = '3px solid #3B82F6';
+      style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.9), inset 0 0 10px rgba(59, 130, 246, 0.3)';
+      style.position = 'relative';
+      style.zIndex = 10;
     }
     
     return style;
