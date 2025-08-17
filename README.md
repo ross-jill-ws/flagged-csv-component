@@ -21,7 +21,33 @@ For example, a cell might contain: `"Total Revenue{#BDD7EE}{MG:143777}{l:A1}"`
 
 This format solves the problem of losing visual context when converting Excel files to CSV, making data more interpretable for AI models and data analysis tools.
 
-**Related Project**: For converting Excel files to Flagged CSV format, see: https://github.com/ross-jill-ws/flagged-csv/tree/main
+## How to Convert Excel XLSX to Flagged CSV
+
+To convert your Excel files to the Flagged CSV format, use the [flagged-csv Python tool](https://github.com/ross-jill-ws/flagged-csv/tree/main). This command-line utility preserves visual formatting information during conversion.
+
+### Quick Start
+
+Install via pip:
+```bash
+pip install flagged-csv
+```
+
+Convert an Excel file with all formatting preserved:
+```bash
+# Basic conversion with colors and merge information
+flagged-csv input.xlsx -t Sheet1 --include-colors --signal-merge -o output.csv
+
+# Or pipe to stdout
+flagged-csv input.xlsx -t Sheet1 --include-colors --signal-merge > output.csv
+```
+
+The tool will:
+- Preserve cell background colors as `{#RRGGBB}` or `{bg:#RRGGBB}` flags
+- Preserve text colors as `{fc:#RRGGBB}` flags  
+- Mark merged cells with `{MG:XXXXXX}` identifiers
+- Optionally add cell locations with `{l:CellRef}` flags
+
+This enables the FlaggedCsvComponent to accurately recreate the Excel table's visual appearance.
 
 ## Features
 
