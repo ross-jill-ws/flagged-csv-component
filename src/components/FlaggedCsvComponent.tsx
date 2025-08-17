@@ -111,7 +111,7 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
     return cell.flags.location ? highlightSet.has(cell.flags.location.toUpperCase()) : false;
   };
   
-  const getCellStyle = (cell: ParsedCell, isHighlighted: boolean, hasHighlights: boolean): React.CSSProperties => {
+  const getCellStyle = (cell: ParsedCell, isHighlighted: boolean, hasHighlights: boolean, isHeaderCell: boolean = false): React.CSSProperties => {
     const style: React.CSSProperties = {};
     
     if (cell.flags.color) {
@@ -122,7 +122,7 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
       style.color = cell.flags.foregroundColor;
     }
     
-    if (hasHighlights) {
+    if (hasHighlights && !isHeaderCell) {
       if (!isHighlighted) {
         style.opacity = '0.2';
         style.filter = 'brightness(0.3)';
@@ -264,8 +264,9 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                 const { rowSpan, colSpan } = getCellSpan(rowIndex, colIndex);
                 const isHighlighted = isCellHighlighted(cell, mergedCell);
                 const hasHighlights = highlightSet.size > 0;
+                const isCellInHeaderRow = rowIndex === 0 && isFirstRowHeader;
                 
-                let cellStyle: React.CSSProperties = getCellStyle(cell, isHighlighted, hasHighlights);
+                let cellStyle: React.CSSProperties = getCellStyle(cell, isHighlighted, hasHighlights, isCellInHeaderRow);
                 if (mergedCell && mergedCell.color && !hasHighlights) {
                   cellStyle.backgroundColor = mergedCell.color;
                 } else if (mergedCell && mergedCell.color && hasHighlights) {
@@ -277,8 +278,6 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                 if (mergedCell && mergedCell.foregroundColor) {
                   cellStyle.color = mergedCell.foregroundColor;
                 }
-                
-                const isCellInHeaderRow = rowIndex === 0 && isFirstRowHeader;
                 const Tag = isCellInHeaderRow ? 'th' : 'td';
                 
                 return (
@@ -288,7 +287,7 @@ const FlaggedCsvComponent: React.FC<FlaggedCsvComponentProps> = ({
                     rowSpan={rowSpan > 1 ? rowSpan : undefined}
                     colSpan={colSpan > 1 ? colSpan : undefined}
                     className={`${hasHighlights && isHighlighted ? '' : 'border border-gray-300'} px-3 py-2 text-sm text-left transition-all duration-300 ${
-                      isCellInHeaderRow ? 'font-semibold bg-gray-50' : ''
+                      isCellInHeaderRow ? 'font-semibold bg-gray-50 sticky top-0 z-20' : ''
                     } ${cell.value ? '' : 'empty-cell'}`}
                     style={{
                       ...cellStyle,
