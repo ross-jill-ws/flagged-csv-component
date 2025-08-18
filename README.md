@@ -8,6 +8,10 @@ A React component library for rendering and interacting with Flagged CSV data, p
 
 Experience the component in action with real estate portfolio data, file upload functionality, and interactive cell highlighting.
 
+### Video Tutorial
+
+[![Flagged CSV Component Demo](https://img.youtube.com/vi/7nSWQ8i0HTQ/maxresdefault.jpg)](https://youtu.be/7nSWQ8i0HTQ)
+
 ## What is Flagged CSV?
 
 Flagged CSV is a format that extends traditional CSV to preserve visual formatting information from Excel files. This is particularly useful when converting XLSX files to CSV while maintaining critical visual context that would otherwise be lost.
