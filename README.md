@@ -152,21 +152,21 @@ function App() {
 ## Development
 
 ### Prerequisites
-- Node.js 18+ (use `node22 npm` commands as specified in CLAUDE.md)
+- Node.js 20+
 - React 19
 
 ### Setup
 ```bash
 git clone <repository-url>
 cd flagged-csv
-node22 npm install
+npm install
 ```
 
 ### Available Scripts
-- `node22 npm run dev` - Start development server with HMR
-- `node22 npm run build` - Build for production  
-- `node22 npm run preview` - Preview production build
-- `node22 npm run lint` - Run ESLint
+- `npm run dev` - Start development server with HMR
+- `npm run build` - Build for production  
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
 ### Project Structure
 ```
@@ -188,7 +188,7 @@ The repository includes a demo application showcasing:
 - Interactive cell highlighting
 - Range selection examples
 
-Run `node22 npm run dev` to see the demo in action.
+Run `npm run dev` to see the demo in action.
 
 ## Technical Details
 
